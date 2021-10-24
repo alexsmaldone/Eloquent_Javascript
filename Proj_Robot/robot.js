@@ -77,3 +77,54 @@ let first = new VillageState(
   [{place: "Post Office", address: "Alice's House"}]
 );
 let next = first.move("Alice's House");
+
+/*
+Robot is a function that takes a VillageState and return the name of a nearby place. The thing the robot returns is
+an object continaing both the direction it wants to move and a memory value that will be given back to it the next time it is called.
+ */
+
+function runRobot(state, robot, memory) {
+  for (let turn = 0;; turn ++) {
+    if (state.parcels == 0) {
+      console.log(`Done in ${turn} turns.`);
+      break;
+    }
+    let action = robot(state, memory);
+    state = state.move(action.direction);
+    memory = action.memory;
+    console.log(`Moved to ${action.direction}`);
+  }
+}
+
+/*
+In order to solve a given state, the robot must pick up all parcels by visiting every location that has a parcel and deliver them by visiting
+every location that a parcel is addressed to, but only after picking up the parcel.
+*/
+
+function randomPick(array) {
+  let choice = Math.floor(Math.random() * array.length);
+  return array[choice];
+}
+
+function randomRobot(state) {
+  return {direction: randomPick(roadGraph[state.place])};
+}
+
+//Create a new state with some parcels
+
+VillageState.random = function(parcelCount = 5) {
+  let parcels = [];
+  for (let i = 0; i < parcelCount; i++) {
+    let address = randomPick(Object.keys(roadGraph));
+    let place;
+    do {
+      place = randomPick(Object.keys(roadGraph));
+    } while (place == address);
+    parcels.push({place, address});
+  }
+  return new VillageState("Post Office", parcels);
+}
+
+runRobot(VillageState.random(), randomRobot);
+
+// We should be able to do better than a random robot. An easy improvement would be to find a route that passes all places in the village and run that route
