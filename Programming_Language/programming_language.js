@@ -30,3 +30,34 @@ function skipSpace(string) {
   if (first == -1) return "";
   return string.slice(first);
 }
+
+/*
+If the next character in the program is not an opening parenthesis, this is not
+an application, and parseApply returns the expression it was given.
+
+Otherwise, it skips the opening parenthesis and creates the syntax tree object
+for this application expression. It then recursively calls parseExpression to
+parse each argument until a closing parenthesis is found. The recursion is
+indirect, through parseApply and parseExpression calling each other.
+*/
+
+function parseApply(expr, program) {
+  program = skipSpace(program);
+  if (program[0] != "(") {
+    return { expr: expr, rest: program };
+  }
+}
+
+program = skipSpace(program.slice(1));
+expr = { type: "apply", operator: expr, args: [] };
+while (program[0] != ")") {
+  let arg = parseExpression(program);
+  expr.args.push(arg.expr);
+  program = skipSpace(arg.rest);
+  if (program[0] == ",") {
+    program = skipSpace(program.slice(1));
+  } else if (program[0] != ")") {
+    throw new SyntaxError("Expected ','' or ')'");
+  }
+  return parseApply(expr, program.slice(1));
+}
