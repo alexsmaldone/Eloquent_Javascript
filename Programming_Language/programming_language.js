@@ -138,3 +138,13 @@ specialForms.while = (args, scope) => {
   // for lack of a meaningful result.
   return false;
 };
+
+// do
+
+specialForms.do = (args, scope) => {
+  let value = false;
+  for (let arg of args) {
+    value = evaluate(arg, scope);
+  }
+  return value;
+};
