@@ -160,13 +160,19 @@ specialForms.define = (args, scope) => {
   return value;
 };
 
-// testing if statement with global variable booleans
+// Global Variables
 
 const topScope = Object.create(null);
 
+// Booleans
 topScope.true = true;
 topScope.false = false;
 
-let prog = parse(`if(true, false, true)`);
-console.log(evaluate(prog, topScope));
+// Math Operators
+for (let op of ["+", "-", "*", "/", "==", "<", ">"]) {
+  topScope[op] = Function("a, b", `return a ${op} b;`);
+}
+
+// let prog = parse(`if(true, false, true)`);
+// console.log(evaluate(prog, topScope));
 // → false
