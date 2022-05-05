@@ -242,11 +242,11 @@ do(define(pow, fun(base, exp,
 // → 1024
 
 // ADDING IN ARRAYS
-topScope.array = "";
+topScope.array = (...values) => values;
 
-topScope.length = "";
+topScope.length = (array) => array.length;
 
-topScope.element = "";
+topScope.element = (array, i) => array[i];
 
 // ARRAY TEST
 run(`
